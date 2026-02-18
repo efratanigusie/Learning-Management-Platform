@@ -3,38 +3,39 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const links = [
-  { name: "Dashboard", href: "/dashboard" },
-  { name: "Users", href: "/users" },
-  { name: "Classes", href: "/classes" },
-  { name: "Subjects", href: "/subjects" },
-  { name: "Announcements", href: "/announcements" },
-  { name: "Reports", href: "/reports" },
-  { name: "Settings", href: "/settings" },
+const menu = [
+  { name: "Dashboard", path: "/admin" },
+  { name: "Users", path: "/admin/users" },
+  { name: "Classes", path: "/admin/classes" },
+  { name: "Subjects", path: "/admin/subjects" },
+  { name: "Announcements", path: "/admin/announcements" },
+  { name: "Reports", path: "/admin/reports" },
+  { name: "Settings", path: "/admin/settings" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-blue-900 text-white min-h-screen p-5">
-      <h2 className="text-2xl font-bold mb-10">Admin Panel</h2>
+    <div className="w-64 bg-[#1e2a47] text-white p-6">
+      <h2 className="text-xl font-bold mb-6">Admin Panel</h2>
 
-      <nav className="space-y-4">
-        {links.map((link) => (
-          <Link
-            key={link.name}
-            href={link.href}
-            className={`block px-4 py-2 rounded-lg transition ${
-              pathname === link.href
-                ? "bg-blue-600"
-                : "hover:bg-blue-700"
-            }`}
-          >
-            {link.name}
-          </Link>
+      <ul className="space-y-4">
+        {menu.map((item) => (
+          <li key={item.name}>
+            <Link
+              href={item.path}
+              className={`block p-2 rounded ${
+                pathname === item.path
+                  ? "bg-blue-600"
+                  : "hover:bg-blue-500"
+              }`}
+            >
+              {item.name}
+            </Link>
+          </li>
         ))}
-      </nav>
-    </aside>
+      </ul>
+    </div>
   );
 }

@@ -5,35 +5,52 @@ import { useRouter } from "next/navigation";
 import { loginUser } from "@/services/auth";
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleLogin = async () => {
-     console.log("Login clicked");
     try {
       setLoading(true);
+
+      console.log("Login clicked");
 
       const res = await loginUser(email, password);
       console.log("Response:", res.data);
 
       const { token, user } = res.data;
 
+      // ✅ Validate backend response
       if (!token || !user?.role) {
         alert("Invalid response from server");
         return;
       }
 
+      // ✅ Store token & role
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
 
-      // Redirect
-      router.push(`/${user.role}`);
+      // ✅ Role-based redirect
+      if (user.role === "admin") {
+        router.push("/admin");
+      } else if (user.role === "teacher") {
+        router.push("/teacher");
+      } else if (user.role === "student") {
+        router.push("/student");
+      } else {
+        router.push("/");
+      }
 
     } catch (error: any) {
-      console.error(error);
-      alert(error.response?.data?.message || "Login failed");
+      console.error("Login Error:", error);
+
+      alert(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Login failed"
+      );
     } finally {
       setLoading(false);
     }
@@ -41,7 +58,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#2f3e63] to-[#1e2a47]">
-
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -49,7 +65,6 @@ export default function LoginPage() {
         }}
         className="w-[350px] flex flex-col gap-5"
       >
-
         <h1 className="text-white text-3xl font-bold text-center mb-8">
           Learning Management System
         </h1>
@@ -81,7 +96,6 @@ export default function LoginPage() {
         >
           {loading ? "Signing in..." : "SIGN IN"}
         </button>
-
       </form>
     </div>
   );
