@@ -28,9 +28,8 @@ export default function LoginPage() {
         return;
       }
 
-      // ✅ Store token & role
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", user.role);
+      // ✅ Store token in COOKIE (NOT localStorage)
+      document.cookie = `token=${token}; path=/`;
 
       // ✅ Role-based redirect
       if (user.role === "admin") {
